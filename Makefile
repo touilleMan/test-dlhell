@@ -1,7 +1,22 @@
+ifeq ($(XCOMPILE),yes)
+CC=x86_64-w64-mingw32-gcc
+CXX=x86_64-w64-mingw32-g++
+WINDOWS=yes
+else
+CC?=clang
+CXX?=clang++
+endif
+
 ifeq ($(WINDOWS),yes)
 CFLAGS+=-DWINDOWS
+LINKFLAGS=
 else
 CFLAGS=
+LINKFLAGS=-ld
+endif
+
+ifeq ($DEBUG,yes)
+CFLAGS+=-g -ggdb
 endif
 
 all: godot module
@@ -12,7 +27,7 @@ debug: godot module
 
 
 godot: godot_main.cpp godot_api.h
-	clang++ godot_main.cpp -ldl -g -ggdb -o godot $(CFLAGS)
+	$(CXX) godot_main.cpp -o godot $(CFLAGS) $(LINKFLAGS)
 
 
 module: libmodule.so godot_api.h
@@ -20,11 +35,11 @@ module: libmodule.so godot_api.h
 
 
 module.o: module.c
-	clang -c -Wall -Werror -fpic -g -ggdb module.c $(CFLAGS)
+	$(CC) -c -Wall -Werror -fpic module.c $(CFLAGS)
 
 
 libmodule.so: module.o
-	clang --shared module.o -o libmodule.so
+	$(CC) --shared module.o -o libmodule.so
 
 
 clean:

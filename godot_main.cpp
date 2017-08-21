@@ -1,5 +1,8 @@
 #include <iostream>
+#if WINDOWS
+#else
 #include <dlfcn.h>
+#endif
 
 #include "godot_api.h"
 
@@ -17,9 +20,15 @@ const char *godot_hello(int x) {
 int main() {
 	// Build the API struct
 	const godot_api_t api = {
+#ifdef WINDOWS
 		.godot_hello=godot_hello
+#else
+		// Nothing to do
+#endif
 	};
 
+#if WINDOWS
+#else
 	// Load the module and call it bootstrap function
 	void *handle = dlopen("./libmodule.so", RTLD_NOW | RTLD_GLOBAL);
 	if (!handle) {
@@ -32,6 +41,7 @@ int main() {
 		return -1;
 	}
 	((void (*)(const godot_api_t*))bootstrap)(&api);
+#endif
 
 	return return_value;
 }
