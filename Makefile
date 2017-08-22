@@ -15,7 +15,7 @@ ifeq ($(WINDOWS),yes)
 CFLAGS+=-DWINDOWS -Wall -Werror
 LINKFLAGS=
 GODOT_LINKFLAGS=$(LINKFLAGS) -Wl,--out-implib,libgodot.a
-MODULE_LINKFLAGS=$(LINKFLAGS) -Wl,--out-implib,libmodule.a libgodot.a
+MODULE_LINKFLAGS=$(LINKFLAGS) -Wl,--out-implib,libmodule.a
 else
 CFLAGS=-Wall -Werror -fPIC
 LINKFLAGS=-ldl -rdynamic

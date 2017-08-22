@@ -30,6 +30,14 @@ const char *godot_hello(int x) {
 
 int main() {
 	// Build the API struct
+	const godot_api_t api = {
+#ifdef WINDOWS
+		.godot_hello=godot_hello
+#else
+		// Nothing to do
+#endif
+	};
+
 #if WINDOWS
 	HINSTANCE handle = LoadLibrary("libmodule.dll");
 	if (!handle) {
@@ -41,7 +49,7 @@ int main() {
 		std::cout << "bootstrap is NULL: " << GetLastError() << std::endl;
 		return -1;
 	}
-	((void (*)())bootstrap)();
+	((void (*)(const godot_api_t*))bootstrap)(&api);
 
 #else
 
@@ -56,7 +64,7 @@ int main() {
 		std::cout << "bootstrap is NULL: " << dlerror() << std::endl;
 		return -1;
 	}
-	((void (*)())bootstrap)();
+	((void (*)(const godot_api_t*))bootstrap)(&api);
 #endif
 
 	return return_value;
