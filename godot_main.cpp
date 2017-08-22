@@ -33,12 +33,12 @@ int main() {
 #if WINDOWS
 	HINSTANCE handle = LoadLibrary("libmodule.dll");
 	if (!handle) {
-		std::cout << "handle is NULL: " << std::endl;
+		std::cout << "handle is NULL: " << GetLastError() << std::endl;
 		return -1;
 	}
 	FARPROC bootstrap = GetProcAddress(handle, "bootstrap");
 	if (!bootstrap) {
-		std::cout << "bootstrap is NULL: " << std::endl;
+		std::cout << "bootstrap is NULL: " << GetLastError() << std::endl;
 		return -1;
 	}
 	((void (*)())bootstrap)();
