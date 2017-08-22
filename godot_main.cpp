@@ -6,6 +6,8 @@
 #include <dlfcn.h>
 #endif
 
+#include "godot_api.h"
+
 
 static int return_value = -1;
 

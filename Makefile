@@ -14,9 +14,13 @@ endif
 ifeq ($(WINDOWS),yes)
 CFLAGS+=-DWINDOWS -Wall -Werror
 LINKFLAGS=
+GODOT_LINKFLAGS=$(LINKFLAGS) -Wl,--out-implib,libgodot.a
+MODULE_LINKFLAGS=$(LINKFLAGS) -Wl,--out-implib,libmodule.a libgodot.a
 else
 CFLAGS=-Wall -Werror -fPIC
 LINKFLAGS=-ldl -rdynamic
+GODOT_LINKFLAGS=$(LINKFLAGS)
+MODULE_LINKFLAGS=$(LINKFLAGS)
 endif
 
 ifeq ($DEBUG,yes)
@@ -35,7 +39,7 @@ godot_main.o: godot_main.cpp godot_api.h
 
 
 godot: godot_main.o
-	$(CXX) godot_main.o -o $(GODOT) $(CFLAGS) $(LINKFLAGS)
+	$(CXX) godot_main.o -o $(GODOT) $(CFLAGS) $(GODOT_LINKFLAGS)
 
 
 module: libmodule.so godot_api.h
@@ -43,12 +47,12 @@ module: libmodule.so godot_api.h
 
 
 module.o: module.c
-	$(CC) -c module.c $(CFLAGS)
+	$(CC) -c module.c $(CFLAGS) -DMODULE
 
 
 libmodule.so: module.o
-	$(CC) --shared module.o -o $(MODULE)
+	$(CC) --shared module.o -o $(MODULE) $(MODULE_LINKFLAGS)
 
 
 clean:
-	rm -f *.o godot godot.exe
+	rm -f *.o *.a *.def godot godot.exe libmodule.dll

@@ -5,7 +5,21 @@
 extern "C" {
 #endif
 
-extern const char *godot_hello(int x);
+#ifdef WINDOWS
+
+#ifdef MODULE
+#define GDAPI __declspec(dllimport)
+#else
+#define GDAPI __declspec(dllexport)
+#endif
+
+#else
+
+#define GDAPI
+
+#endif
+
+GDAPI extern const char *godot_hello(int x);
 
 #ifdef __cplusplus
 }
