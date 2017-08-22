@@ -6,10 +6,12 @@
 #include <dlfcn.h>
 #endif
 
-#include "godot_api.h"
 
+static int return_value = -1;
 
-static int return_value = 0;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 const char *godot_hello(int x) {
@@ -17,6 +19,11 @@ const char *godot_hello(int x) {
 	static const char hello[] = "Hello world !";
 	return hello;
 }
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 int main() {

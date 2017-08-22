@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-extern const char *godot_hello(int x);  // godot_hello is a real function here
+extern const char *godot_hello(int x);
 
 #ifdef __cplusplus
 }

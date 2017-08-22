@@ -12,11 +12,11 @@ MODULE=libmodule.so
 endif
 
 ifeq ($(WINDOWS),yes)
-CFLAGS+=-DWINDOWS
-LINKFLAGS=
+CFLAGS+=-DWINDOWS -Wall -Werror
+LINKFLAGS=-rdynamic
 else
-CFLAGS=
-LINKFLAGS=-ldl
+CFLAGS=-Wall -Werror
+LINKFLAGS=-ldl -rdynamic
 endif
 
 ifeq ($DEBUG,yes)
@@ -30,8 +30,12 @@ debug: godot module
 	lldb ./godot
 
 
-godot: godot_main.cpp godot_api.h
-	$(CXX) godot_main.cpp -o $(GODOT) $(CFLAGS) $(LINKFLAGS)
+godot_main.o: godot_main.cpp godot_api.h
+	$(CXX) -c -fPIC godot_main.cpp $(CFLAGS)
+
+
+godot: godot_main.o
+	$(CXX) godot_main.o -o $(GODOT) $(CFLAGS) $(LINKFLAGS)
 
 
 module: libmodule.so godot_api.h
@@ -39,7 +43,7 @@ module: libmodule.so godot_api.h
 
 
 module.o: module.c
-	$(CC) -c -Wall -Werror -fpic module.c $(CFLAGS)
+	$(CC) -c -fPIC module.c $(CFLAGS)
 
 
 libmodule.so: module.o
@@ -47,4 +51,4 @@ libmodule.so: module.o
 
 
 clean:
-	rm -f module.o libmodule.so godot godot.exe
+	rm -f *.o godot godot.exe

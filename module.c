@@ -4,6 +4,6 @@
 
 
 void bootstrap() {
-	const char *hello = godot_hello(42);
+	const char *hello = godot_hello(0);
 	printf("%s\n", hello);
 }
