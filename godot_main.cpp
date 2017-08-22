@@ -31,7 +31,7 @@ const char *godot_hello(int x) {
 int main() {
 	// Build the API struct
 #if WINDOWS
-	HINSTANCE handle = LoadLibrary("libmodule.dll");
+	HINSTANCE handle = LoadLibraryEx("libmodule.dll", NULL, LOAD_IGNORE_CODE_AUTHZ_LEVEL);
 	if (!handle) {
 		std::cout << "handle is NULL: " << GetLastError() << std::endl;
 		return -1;
