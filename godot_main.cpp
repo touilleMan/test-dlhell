@@ -1,5 +1,7 @@
 #include <iostream>
+
 #if WINDOWS
+#include <windows.h>
 #else
 #include <dlfcn.h>
 #endif
@@ -28,7 +30,20 @@ int main() {
 	};
 
 #if WINDOWS
+	HINSTANCE handle = LoadLibrary("libmodule.dll");
+	if (!handle) {
+		std::cout << "handle is NULL: " << std::endl;
+		return -1;
+	}
+	FARPROC bootstrap = GetProcAddress(handle, "bootstrap");
+	if (!bootstrap) {
+		std::cout << "bootstrap is NULL: " << std::endl;
+		return -1;
+	}
+	((void (*)(const godot_api_t*))bootstrap)(&api);
+
 #else
+
 	// Load the module and call it bootstrap function
 	void *handle = dlopen("./libmodule.so", RTLD_NOW | RTLD_GLOBAL);
 	if (!handle) {
