@@ -13,9 +13,9 @@ endif
 
 ifeq ($(WINDOWS),yes)
 CFLAGS+=-DWINDOWS -Wall -Werror
-LINKFLAGS=-rdynamic
+LINKFLAGS=
 else
-CFLAGS=-Wall -Werror
+CFLAGS=-Wall -Werror -fPIC
 LINKFLAGS=-ldl -rdynamic
 endif
 
@@ -31,7 +31,7 @@ debug: godot module
 
 
 godot_main.o: godot_main.cpp godot_api.h
-	$(CXX) -c -fPIC godot_main.cpp $(CFLAGS)
+	$(CXX) -c godot_main.cpp $(CFLAGS)
 
 
 godot: godot_main.o
@@ -43,7 +43,7 @@ module: libmodule.so godot_api.h
 
 
 module.o: module.c
-	$(CC) -c -fPIC module.c $(CFLAGS)
+	$(CC) -c module.c $(CFLAGS)
 
 
 libmodule.so: module.o
